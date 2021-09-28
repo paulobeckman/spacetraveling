@@ -32,9 +32,9 @@ export default function Home({ postsPagination }: HomeProps) {
   return (
     <>
       <Head>
-        <img src="logo.svg" alt="logo" />
+        <title>Home | Spacetraveling</title>
       </Head>
-      <main className={styles.container}>
+      <main className={commonStyles.container}>
         <div className={styles.posts}>
           {postsPagination.results.map(post => (
             <Link href={`/posts/${post.uid}`} >
@@ -43,7 +43,7 @@ export default function Home({ postsPagination }: HomeProps) {
                  <p>{post.data.subtitle}</p>
 
                  <footer>
-                   <p>{post.first_publication_date}</p>
+                   <time>{post.first_publication_date}</time>
                    <p>{post.data.author}</p>
                  </footer>
               </a>
