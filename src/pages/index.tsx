@@ -1,4 +1,5 @@
 import { GetStaticProps } from 'next';
+import { FaRegCalendar , FaRegUser} from 'react-icons/fa';
 import Head from 'next/head';
 import Link from 'next/link';
 import Prismic from '@prismicio/client';
@@ -43,12 +44,19 @@ export default function Home({ postsPagination }: HomeProps) {
                  <p>{post.data.subtitle}</p>
 
                  <footer>
-                   <time>{post.first_publication_date}</time>
-                   <p>{post.data.author}</p>
+                   <section>
+                    <FaRegCalendar />
+                    <time>{post.first_publication_date}</time>
+                   </section>
+                   <section>
+                    <FaRegUser />
+                    <p>{post.data.author}</p>
+                   </section>
                  </footer>
               </a>
             </Link>
           ))}
+        <a href="">Carregar mais posts</a>
         </div>
       </main>
     </>

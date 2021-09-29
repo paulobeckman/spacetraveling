@@ -35,11 +35,28 @@
             font-size: 0.875rem;
 
             margin-top: 1.5rem;
-        }
+            align-items: center;
 
+            section {
+                align-items: center;
+                display: flex;
+                column-gap: 0.5rem;
+
+                svg {
+                    height: 20px;
+                    width: 20px;
+                }
+            }
+        }
 
         &:hover strong {
             color: var(--yellow-500);
         }
+    }
+
+    a:last-child {
+        color: var(--pink-500);
+        font-weight: 600;
+        font-size: 1.125rem;
     }
 }
