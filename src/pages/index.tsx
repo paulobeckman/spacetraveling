@@ -32,7 +32,7 @@ interface HomeProps {
 export default function Home({ postsPagination }: HomeProps) {
   function date(timestamp){
     const date = new Date(timestamp)
-    const meses = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul","Ago","Set","Out","Nov","Dez"];
+    const meses = ["jan", "fev", "mar", "abr", "mai", "jun", "jul","ago","set","out","nov","dez"];
 
     const year = date.getUTCFullYear()
     const month = meses[date.getUTCMonth()]
@@ -50,7 +50,7 @@ export default function Home({ postsPagination }: HomeProps) {
       <main className={commonStyles.container}>
         <div className={styles.posts}>
           {postsPagination.results.map(post => (
-            <Link key={post.uid} href={`/posts/${post.uid}`} >
+            <Link key={post.uid} href={`/post/${post.uid}`} >
               <a>
                 <strong>{post.data.title}</strong>
                 <p>{post.data.subtitle}</p>
@@ -67,7 +67,9 @@ export default function Home({ postsPagination }: HomeProps) {
               </a>
             </Link>
           ))}
-        <a href={postsPagination.next_page}>Carregar mais posts</a>
+          {postsPagination.next_page && (
+            <a href='*'>Carregar mais posts</a>
+          )}
         </div>
       </main>
     </>
