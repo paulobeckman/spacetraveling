@@ -3,3 +3,26 @@
     margin: 0 auto;
     padding: 0 2rem;
 }
+
+.info {
+    display: flex;
+    column-gap: 1.5rem;
+    color: var(--gray-300);
+    font-weight: 400;
+    font-size: 0.875rem;
+
+    margin-top: 1.5rem;
+    align-items: center;
+
+    time, 
+    span {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+    }
+
+    svg {
+        height: 20px;
+        width: 20px;
+    }
+}

@@ -1,11 +1,14 @@
+import { useState } from 'react';
 import { GetStaticProps } from 'next';
-import { FaRegCalendar , FaRegUser} from 'react-icons/fa';
 import Head from 'next/head';
 import Link from 'next/link';
-import Prismic from '@prismicio/client';
-import { RichText } from 'prismic-dom';
 
+import Prismic from '@prismicio/client';
+import ApiSearchResponse from '@prismicio/client/types/ApiSearchResponse';
 import { getPrismicClient } from '../services/prismic';
+
+import { formatDateToPtBr } from '../utils/formatDate';
+import { FaRegCalendar , FaRegUser} from 'react-icons/fa';
 
 import commonStyles from '../styles/common.module.scss';
 import styles from './home.module.scss';
@@ -30,18 +33,18 @@ interface HomeProps {
 }
 
 export default function Home({ postsPagination }: HomeProps) {
-  function date(timestamp){
-    const date = new Date(timestamp)
-    const meses = ["jan", "fev", "mar", "abr", "mai", "jun", "jul","ago","set","out","nov","dez"];
+  const [posts, setPosts] = useState<Post[]>(postsPagination.results);
+  const [hasMorePosts, setHasMorePosts] = useState(!!postsPagination.next_page);
+  
+  async function handleLoadMorePosts(): Promise<void> {
+    const loadMorePostsResponse: ApiSearchResponse = await (
+      await fetch(postsPagination.next_page)
+    ).json();
 
-    const year = date.getUTCFullYear()
-    const month = meses[date.getUTCMonth()]
-    const day = `0${date.getUTCDate()}`.slice(-2)
-
-    return {
-        format: `${day} ${month} ${year}`
-    }
+    setPosts([...posts, ...loadMorePostsResponse.results]);
+    setHasMorePosts(!!loadMorePostsResponse.next_page);
   }
+
   return (
     <>
       <Head>
@@ -49,26 +52,28 @@ export default function Home({ postsPagination }: HomeProps) {
       </Head>
       <main className={commonStyles.container}>
         <div className={styles.posts}>
-          {postsPagination.results.map(post => (
+          {posts?.map(post => (
             <Link key={post.uid} href={`/post/${post.uid}`} >
               <a>
                 <strong>{post.data.title}</strong>
                 <p>{post.data.subtitle}</p>
-                <footer>
-                  <section>
+                <div className={commonStyles.info}>
+                  <time>
                     <FaRegCalendar />
-                    <time>{date(post.first_publication_date).format}</time>
-                  </section>
-                  <section>
+                    {formatDateToPtBr(post.first_publication_date)}
+                  </time>
+                  <span>
                     <FaRegUser />
-                    <p>{post.data.author}</p>
-                  </section>
-                </footer>
+                    {post.data.author}
+                  </span>
+                </div>
               </a>
             </Link>
           ))}
-          {postsPagination.next_page && (
-            <a href='*'>Carregar mais posts</a>
+          {!!hasMorePosts && (
+            <button type="button" onClick={handleLoadMorePosts}>
+              Carregar mais posts
+            </button>
           )}
         </div>
       </main>
@@ -76,39 +81,24 @@ export default function Home({ postsPagination }: HomeProps) {
   );
 }
 
-export const getStaticProps: GetStaticProps = async () => {
+export const getStaticProps: GetStaticProps = async ({
+  previewData,
+}) => {
   const prismic = getPrismicClient();
 
-  const response = await prismic.query([
-    Prismic.predicates.at('document.type', 'posts')
-  ], {
-    fetch: ['posts.title', 'posts.subtitle', 'posts.author'],
-    pageSize: 1,
-    page: 1,
-  })
-
-  // console.log(JSON.stringify(response, null, 2))
-
-  const results = response.results.map(post => {
-    return {
-      uid: post.uid,
-      first_publication_date: post.first_publication_date,
-      data: {
-        title: post.data.title,
-        subtitle: post.data.subtitle,
-        author: post.data.author
-      }
+  const response = await prismic.query(
+    Prismic.predicates.at('document.type', 'posts'),
+    {
+      fetch: ['posts.title', 'posts.subtitle', 'posts.author'],
+      pageSize: 2,
+      ref: previewData?.ref ?? null,
     }
-  })
-
-  const next_page = response.next_page
-
-  const postsPagination ={
-    results,
-    next_page
-  }
+  );
 
   return {
-    props: {postsPagination}
+    props: {
+      postsPagination: response,
+    },
+    revalidate: 60 * 30 // 30 min
   }
 }

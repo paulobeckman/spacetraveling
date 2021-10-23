@@ -1,6 +1,6 @@
 .posts {
     max-width: 720px;
-    margin: 5rem auto 0;
+    margin: 4.063rem auto;
 
     a {
         display: block;
@@ -54,9 +54,13 @@
         }
     }
 
-    a:last-child {
+    button {
         color: var(--pink-500);
         font-weight: 600;
         font-size: 1.125rem;
+        background: none;
+        border: none;
+
+        margin-top: 4.063rem;
     }
 }
