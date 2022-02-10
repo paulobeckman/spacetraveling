@@ -9,6 +9,9 @@
 }
 
 .banner{
+    display: flex;
+    align-items: center;
+    
     img {
       height: 25rem;
       width: 100vw;
@@ -27,5 +30,31 @@
     div {
         font-size: 1.125rem;
         color: var(--gray-100);
+    }
+}
+
+.navegation {
+    display: flex;
+    justify-content: space-between;
+    border-top: 1px solid var( --gray-300);
+
+    margin-top: 4.375rem;
+
+    div {
+        padding:  4.375rem 0;
+        max-width: 18.75rem;
+    }
+
+    p {
+        padding: 0.625rem 0;
+    }
+
+    a {
+        color: var(--pink-500);
+        font-weight: 600;
+
+        &:hover {
+            filter: brightness(1.1)
+        }
     }
 }

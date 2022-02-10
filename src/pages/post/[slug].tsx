@@ -13,10 +13,13 @@ import Header from '../../components/Header';
 
 import commonStyles from '../../styles/common.module.scss';
 import styles from './post.module.scss';
+import Comments from '../../components/Comments';
+import Link from 'next/link';
 
 interface Post {
   last_publication_date: string | null;
   first_publication_date: string | null;
+  uid: string;
   data: {
     title: string;
     banner: {
@@ -111,6 +114,12 @@ export default function Post({ post, preview, nextPost, prevPost }: PostProps) {
                 {estimatedReadTime} min
               </time>
             </div>
+            <div className={commonStyles.info}>
+              <span>
+                <i>{`* editado em ${formatDateToPtBr(post.last_publication_date, true)}`}</i>
+              </span>
+            </div>
+
             {post.data.content.map(post => (
               <section key={post.heading} className={styles.post}>
                 <h2>{post.heading}</h2>
@@ -121,6 +130,32 @@ export default function Post({ post, preview, nextPost, prevPost }: PostProps) {
                 />
               </section>
             ))}
+
+            <div className={styles.navegation}>
+              <div>
+                {prevPost && (
+                  <>
+                    <p>{prevPost.data.title}</p>
+                    <Link href={`/post/${prevPost.uid}`}>
+                      <a>Post anterior</a>
+                    </Link>
+                  </>
+                )}
+              </div>
+
+              <div>
+                {nextPost && (
+                  <>
+                    <p>{nextPost.data.title}</p>
+                    <Link href={`/post/${nextPost.uid}`}>
+                      <a>Próximo post</a>
+                    </Link>
+                  </>
+                )}
+              </div>
+            </div>
+
+            <Comments />
           </article>
         </div>
       </main>
